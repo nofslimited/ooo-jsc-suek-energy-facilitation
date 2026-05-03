@@ -1,120 +1,135 @@
-import { useState, useEffect } from "react";
-import { ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowRight, ShieldCheck, Globe2, Factory } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useLanguage } from "../context/LanguageContext";
 
 const slides = [
   {
-    image: "https://images.unsplash.com/photo-1696541681346-b8787dbed51c?w=1200&q=70",
-    subtitle: "Leading Petroleum Distribution",
-    description: "Excellence Across Russia — Russia's trusted petroleum products distributor with 850+ transport vehicles and 28 years of excellence.",
+    image:
+      "https://images.unsplash.com/photo-1696541681346-b8787dbed51c?w=1600&q=80",
+    eyebrow: "Global Energy Facilitation",
+    title: "Petroleum Supply Coordination Built for Serious Buyers",
+    description:
+      "OOO JSC SUEK Energy Facilitation supports verified petroleum sourcing, refinery coordination, documentation guidance, and international logistics support.",
   },
   {
-    image: "https://images.unsplash.com/photo-1630522521620-53f6e3f64aec?w=1200&q=70",
-    subtitle: "Advanced Infrastructure",
-    description: "Modern Refinery Operations — State-of-the-art facilities and cutting-edge technology for superior petroleum processing.",
+    image:
+      "https://images.unsplash.com/photo-1630522521620-53f6e3f64aec?w=1600&q=80",
+    eyebrow: "Refinery & Terminal Network",
+    title: "Connecting Buyers, Suppliers, Refineries and Logistics Partners",
+    description:
+      "We help clients navigate energy transactions with structured communication, supplier verification support, and professional commercial coordination.",
   },
   {
-    image: "https://images.unsplash.com/photo-1630522521616-b5b4cf458621?w=1200&q=70",
-    subtitle: "24/7 Operations",
-    description: "Powering Russia Forward — Uninterrupted supply chain management ensuring fuel availability across all 85 regions.",
+    image:
+      "https://images.unsplash.com/photo-1630522521616-b5b4cf458621?w=1600&q=80",
+    eyebrow: "Secure Energy Transactions",
+    title: "Professional Facilitation for Petroleum Trade Operations",
+    description:
+      "From inquiry to documentation and delivery coordination, our process is designed for clarity, confidence, and international business standards.",
   },
 ];
 
 export function HeroSlider() {
-  const { t } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 6000);
+    }, 6500);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(timer);
   }, []);
 
+  const active = slides[currentSlide];
+
   return (
-    <section className="relative h-[560px] bg-slate-950 overflow-hidden">
+    <section className="relative min-h-[720px] overflow-hidden bg-slate-950 text-white">
       {slides.map((slide, idx) => (
         <div
-          key={idx}
+          key={slide.title}
           className={`absolute inset-0 transition-opacity duration-1000 ${
             idx === currentSlide ? "opacity-100" : "opacity-0"
           }`}
-          style={{
-            backgroundImage: `url('${slide.image}')`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        ></div>
+        >
+          <img
+            src={slide.image}
+            alt={slide.title}
+            className="h-full w-full object-cover"
+          />
+        </div>
       ))}
 
-      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/75 to-slate-950/40"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-slate-950/35" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(37,99,235,0.18),transparent_35%)]" />
 
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTYiIGhlaWdodD0iNTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTSAwIDAgTCA1NiAwIEwgNTYgNTYgTCAwIDU2IFoiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNDUsMTU4LDExLDAuMDQpIiBzdHJva2Utd2lkdGg9IjEiLz48L3N2Zz4=')] opacity-30"></div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
-        <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-3 px-4 py-2 bg-amber-500/20 border border-amber-500/30 rounded-full mb-7">
-            <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
-            <span className="font-mono text-[10px] text-amber-400 tracking-[0.18em] uppercase">
-              ISO 9001:2015 Certified | OOO JSC SUEK
+      <div className="relative z-10 mx-auto flex min-h-[720px] max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl">
+          <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-amber-400/30 bg-amber-400/10 px-5 py-2">
+            <span className="h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_20px_rgba(251,191,36,0.8)]" />
+            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-300">
+              {active.eyebrow}
             </span>
           </div>
 
-          <h1 className="text-6xl md:text-7xl font-bold mb-5 leading-[0.95]">
-            <span className="text-blue-400">OOO JSC SUEK</span>
-            <span className="block text-5xl md:text-6xl text-white mt-2">
-              {slides[currentSlide].subtitle}
+          <h1 className="max-w-5xl text-5xl font-black leading-[0.95] tracking-tight md:text-7xl">
+            <span className="block text-white">
+              OOO JSC SUEK
+            </span>
+            <span className="mt-3 block bg-gradient-to-r from-amber-300 via-amber-500 to-orange-500 bg-clip-text text-transparent">
+              Energy Facilitation
             </span>
           </h1>
 
-          <p className="text-lg md:text-xl text-slate-300 mb-10 leading-relaxed max-w-xl">
-            {slides[currentSlide].description}
+          <p className="mt-8 max-w-2xl text-xl leading-8 text-slate-200">
+            {active.description}
           </p>
 
-          <div className="flex flex-wrap gap-4 mb-12">
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
             <Link
               to="/contact"
-              className="inline-flex items-center gap-2 bg-amber-500 text-slate-950 px-9 py-4 rounded font-bold text-xs tracking-[0.12em] uppercase hover:bg-amber-400 transition-all"
+              className="inline-flex items-center justify-center gap-3 rounded-xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-[0.16em] text-slate-950 shadow-2xl shadow-amber-500/20 transition hover:bg-amber-400"
             >
-              {t('hero.requestQuote')} <ArrowRight className="w-4 h-4" />
+              Request Facilitation
+              <ArrowRight className="h-5 w-5" />
             </Link>
+
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 border-2 border-white/35 text-white px-9 py-4 rounded font-semibold text-xs tracking-[0.12em] uppercase hover:bg-white/10 transition-all"
+              className="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/10 px-8 py-4 text-sm font-bold uppercase tracking-[0.16em] text-white backdrop-blur transition hover:bg-white/20"
             >
-              {t('hero.ourServices')}
+              Explore Services
             </Link>
           </div>
 
-          <div className="flex flex-wrap gap-3">
-            {["ISO 9001:2015", "ISO 14001:2015", "ISO 45001:2018", "GOST R"].map((cert, idx) => (
+          <div className="mt-12 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
+            {[
+              { icon: ShieldCheck, title: "Verified Process" },
+              { icon: Globe2, title: "Global Coordination" },
+              { icon: Factory, title: "Refinery Support" },
+            ].map((item) => (
               <div
-                key={idx}
-                className="flex items-center gap-2 px-3 py-2 border border-slate-700 rounded text-[10px] font-mono text-slate-400"
+                key={item.title}
+                className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur"
               >
-                <span className="text-amber-500">✓</span>
-                {cert}
+                <item.icon className="mb-3 h-6 w-6 text-amber-400" />
+                <p className="text-sm font-bold text-white">{item.title}</p>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-3">
-        {slides.map((_, idx) => (
+      <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-3">
+        {slides.map((slide, idx) => (
           <button
-            key={idx}
+            key={slide.title}
             onClick={() => setCurrentSlide(idx)}
-            className={`h-0.5 rounded-full transition-all ${
-              idx === currentSlide ? "w-10 bg-amber-500" : "w-7 bg-white/30"
+            className={`h-1 rounded-full transition-all ${
+              idx === currentSlide ? "w-12 bg-amber-400" : "w-7 bg-white/30"
             }`}
-          ></button>
+          />
         ))}
       </div>
-
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-950 to-transparent z-5"></div>
     </section>
   );
 }
