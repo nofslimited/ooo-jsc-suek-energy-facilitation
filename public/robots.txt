@@ -1,0 +1,14 @@
+# OOO JSC SUEK Official Website - www.ooojscsuek.ru
+# Google Ads and SEO Compliant
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.ooojscsuek.ru/sitemap.xml
+
+# Contact Information
+# Company: OOO JSC SUEK
+# Website: www.ooojscsuek.ru
+# Phone: +7 926 503 82 48
+# Email: jscsuek@inbox.ru
