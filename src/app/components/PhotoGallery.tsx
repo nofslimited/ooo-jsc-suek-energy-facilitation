@@ -1,6 +1,6 @@
 import { Play, Image as ImageIcon } from "lucide-react";
 import { useState } from "react";
-import { useLanguage } from "./context/LanguageContext";
+import { useLanguage } from "../context/LanguageContext";
 import logoImg from "../../imports/c5803775-2a71-4c22-8c68-844632b07152-1.jpeg";
 
 interface GalleryItem {

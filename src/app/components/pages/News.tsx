@@ -1,6 +1,6 @@
 import { Calendar, Tag } from "lucide-react";
 import { PhotoGallery } from "../PhotoGallery";
-import { useLanguage } from "../../context/LanguageContext";
+import { useLanguage } from "../context/LanguageContext";
 
 export function News() {
   const { t } = useLanguage();

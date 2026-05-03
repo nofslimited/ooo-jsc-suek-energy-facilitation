@@ -1,7 +1,7 @@
 import { Ship, Truck, Plane, Train } from "lucide-react";
 import { PhotoGallery } from "../PhotoGallery";
 import { VideoPlayer } from "../VideoPlayer";
-import { useLanguage } from "../../context/LanguageContext";
+import { useLanguage } from "../context/LanguageContext";
 
 export function Fleet() {
   const { t } = useLanguage();
