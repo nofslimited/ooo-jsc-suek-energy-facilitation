@@ -22,17 +22,17 @@ export function Navigation() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/95 text-white shadow-2xl shadow-slate-950/20 backdrop-blur-xl">
-      <div className="border-b border-white/5 bg-slate-900/70">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950 text-white shadow-xl">
+      <div className="bg-slate-900">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-300 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-4 w-4 text-amber-400" />
-            <span>Verified Energy Facilitation & Petroleum Logistics</span>
+            <span>Energy Facilitation & Petroleum Logistics</span>
           </div>
 
           <a
             href="tel:+79265038248"
-            className="hidden items-center gap-2 text-amber-300 transition hover:text-amber-200 md:flex"
+            className="hidden items-center gap-2 text-amber-300 hover:text-amber-200 md:flex"
           >
             <Phone className="h-4 w-4" />
             +7 926 503 82 48
@@ -41,27 +41,27 @@ export function Navigation() {
       </div>
 
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-20 items-center justify-between">
-          <Link to="/" className="flex items-center gap-4">
-            <div className="rounded-2xl bg-white p-2 shadow-lg shadow-amber-500/10">
+        <div className="flex min-h-20 items-center justify-between gap-6">
+          <Link to="/" className="flex shrink-0 items-center gap-3">
+            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white p-1.5">
               <img
                 src={logoImg}
                 alt="OOO JSC SUEK Energy Facilitation"
-                className="h-11 w-auto"
+                className="max-h-full max-w-full object-contain"
               />
             </div>
 
-            <div className="hidden leading-tight sm:block">
-              <p className="text-sm font-black uppercase tracking-[0.18em] text-white">
+            <div className="leading-tight">
+              <p className="text-sm font-black uppercase tracking-[0.16em] text-white">
                 OOO JSC SUEK
               </p>
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-amber-400">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amber-400">
                 Energy Facilitation
               </p>
             </div>
           </Link>
 
-          <div className="hidden items-center gap-1 xl:flex">
+          <div className="hidden flex-1 items-center justify-center gap-1 xl:flex">
             {navItems.map((item) => {
               const active = location.pathname === item.path;
 
@@ -69,9 +69,9 @@ export function Navigation() {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`rounded-xl px-3 py-2 text-[11px] font-bold uppercase tracking-[0.14em] transition ${
+                  className={`rounded-xl px-3 py-2 text-[11px] font-black uppercase tracking-[0.12em] transition ${
                     active
-                      ? "bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20"
+                      ? "bg-amber-500 text-slate-950"
                       : "text-slate-300 hover:bg-white/10 hover:text-white"
                   }`}
                 >
@@ -81,12 +81,12 @@ export function Navigation() {
             })}
           </div>
 
-          <div className="hidden items-center gap-4 xl:flex">
+          <div className="hidden shrink-0 items-center gap-4 xl:flex">
             <LanguageSwitcher />
 
             <Link
               to="/contact"
-              className="rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 px-5 py-3 text-[11px] font-black uppercase tracking-[0.16em] text-slate-950 shadow-lg shadow-amber-500/20 transition hover:from-amber-300 hover:to-orange-400"
+              className="rounded-xl bg-amber-500 px-5 py-3 text-[11px] font-black uppercase tracking-[0.14em] text-slate-950 transition hover:bg-amber-400"
             >
               {t("nav.getQuote")}
             </Link>
@@ -131,14 +131,6 @@ export function Navigation() {
             <div className="pt-4">
               <LanguageSwitcher />
             </div>
-
-            <Link
-              to="/contact"
-              onClick={() => setMobileMenuOpen(false)}
-              className="mt-4 block rounded-xl bg-amber-500 px-5 py-4 text-center text-sm font-black uppercase tracking-[0.16em] text-slate-950"
-            >
-              {t("nav.getQuote")}
-            </Link>
           </div>
         </div>
       )}
