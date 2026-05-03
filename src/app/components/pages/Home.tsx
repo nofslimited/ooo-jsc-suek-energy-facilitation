@@ -12,17 +12,44 @@ import {
   Landmark,
   Headphones,
 } from "lucide-react";
+import { lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { HeroSlider } from "../HeroSlider";
-import { ClientTestimonials } from "../ClientTestimonials";
-import { PhotoGallery } from "../PhotoGallery";
-import { TrustBadges } from "../TrustBadges";
-import { VideoPlayer } from "../VideoPlayer";
-import { useLanguage } from "../../context/LanguageContext";
+import { refineryBackgrounds } from "../../assets/backgrounds";
+
+const ClientTestimonials = lazy(() =>
+  import("../ClientTestimonials").then((module) => ({
+    default: module.ClientTestimonials,
+  }))
+);
+
+const PhotoGallery = lazy(() =>
+  import("../PhotoGallery").then((module) => ({
+    default: module.PhotoGallery,
+  }))
+);
+
+const TrustBadges = lazy(() =>
+  import("../TrustBadges").then((module) => ({
+    default: module.TrustBadges,
+  }))
+);
+
+const VideoPlayer = lazy(() =>
+  import("../VideoPlayer").then((module) => ({
+    default: module.VideoPlayer,
+  }))
+);
+
+const SectionLoader = () => (
+  <div className="flex items-center justify-center bg-white py-16">
+    <div className="rounded-full border border-slate-200 px-6 py-3 text-sm font-bold uppercase tracking-[0.18em] text-slate-500">
+      Loading section...
+    </div>
+  </div>
+);
 
 export function Home() {
-  const { t } = useLanguage();
-
   const stats = [
     { value: "24/7", label: "Operational Support", note: "Client coordination" },
     { value: "85+", label: "Regional Reach", note: "Market access support" },
@@ -147,7 +174,7 @@ export function Home() {
             {pillars.map((item) => (
               <div
                 key={item.title}
-                className="group rounded-3xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/50 transition hover:-translate-y-1 hover:border-amber-400/60 hover:shadow-2xl"
+                className="group rounded-3xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/50 transition duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:border-amber-400/60 hover:shadow-2xl"
               >
                 <div className="mb-7 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-950 transition group-hover:bg-amber-500">
                   <item.icon className="h-8 w-8 text-amber-400 transition group-hover:text-slate-950" />
@@ -169,13 +196,12 @@ export function Home() {
       </section>
 
       <section className="relative overflow-hidden bg-slate-950 py-24 text-white">
-        <div className="absolute inset-0 opacity-30">
-          <img
-            src="https://images.unsplash.com/photo-1670689334896-8fa8291daa27?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920"
-            alt="Energy infrastructure"
-            className="h-full w-full object-cover"
-          />
-        </div>
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-30"
+          style={{
+            backgroundImage: `url(${refineryBackgrounds.refineryBlue})`,
+          }}
+        />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/95 to-slate-900/80" />
 
         <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-14 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
@@ -234,7 +260,7 @@ export function Home() {
             {advantages.map((item) => (
               <div
                 key={item.title}
-                className="rounded-3xl border border-white/10 bg-white/10 p-6 backdrop-blur transition hover:border-amber-400/40 hover:bg-white/15"
+                className="rounded-3xl border border-white/10 bg-white/10 p-6 backdrop-blur transition duration-300 hover:scale-[1.02] hover:border-amber-400/40 hover:bg-white/15"
               >
                 <item.icon className="mb-5 h-8 w-8 text-amber-400" />
                 <h3 className="mb-3 text-lg font-black text-white">
@@ -249,7 +275,9 @@ export function Home() {
         </div>
       </section>
 
-      <TrustBadges />
+      <Suspense fallback={<SectionLoader />}>
+        <TrustBadges />
+      </Suspense>
 
       <section className="bg-gradient-to-br from-slate-50 to-white py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -273,40 +301,31 @@ export function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-            <VideoPlayer
-              thumbnail="https://images.unsplash.com/photo-1596980786765-775174984ec9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200"
-              title="Refinery Coordination & Energy Operations"
-              duration="4:15"
-            />
-            <VideoPlayer
-              thumbnail="https://images.unsplash.com/photo-1670689334896-8fa8291daa27?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200"
-              title="Digital Support for Petroleum Trade"
-              duration="3:48"
-            />
-            <VideoPlayer
-              thumbnail="https://images.unsplash.com/photo-1726111254187-9c584c215689?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200"
-              title="Corporate Energy Facilitation Model"
-              duration="6:22"
-            />
-            <VideoPlayer
-              thumbnail="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200"
-              title="Client Service & Commercial Support"
-              duration="2:54"
-            />
-          </div>
+          <Suspense fallback={<SectionLoader />}>
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <VideoPlayer
+                thumbnail={`${refineryBackgrounds.refineryOperations}&w=900`}
+                title="Refinery Coordination & Energy Operations"
+                duration="4:15"
+              />
+              <VideoPlayer
+                thumbnail={`${refineryBackgrounds.refineryBlue}&w=900`}
+                title="Digital Support for Petroleum Trade"
+                duration="3:48"
+              />
+            </div>
+          </Suspense>
         </div>
       </section>
 
       <section className="relative overflow-hidden py-24 text-white">
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1749484460743-654768ed67ba?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920"
-            alt="Refinery at night"
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/90 to-slate-900/80" />
-        </div>
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${refineryBackgrounds.industrialNight})`,
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/90 to-slate-900/80" />
 
         <div className="relative mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
           <div className="mb-5 inline-flex items-center gap-3 rounded-full border border-amber-400/30 bg-amber-400/10 px-5 py-2">
@@ -346,63 +365,40 @@ export function Home() {
         </div>
       </section>
 
-      <ClientTestimonials />
+      <Suspense fallback={<SectionLoader />}>
+        <ClientTestimonials />
+      </Suspense>
 
-      <PhotoGallery
-        title="Corporate Media & Energy Infrastructure"
-        subtitle="Operations Gallery"
-        items={[
-          {
-            type: "video",
-            src: "",
-            thumbnail:
-              "https://images.unsplash.com/photo-1726111440333-ab02a5a36d5f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600",
-            title: "Night Operations - Advanced Facilities",
-            description:
-              "24/7 petroleum-linked operations with advanced infrastructure",
-          },
-          {
-            type: "image",
-            src: "https://images.unsplash.com/photo-1772376920749-afdc99c517f7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
-            thumbnail:
-              "https://images.unsplash.com/photo-1772376920749-afdc99c517f7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600",
-            title: "Storage Tank Infrastructure",
-            description: "High-capacity petroleum storage and terminal support",
-          },
-          {
-            type: "image",
-            src: "https://images.unsplash.com/photo-1636321187141-80858158d614?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
-            thumbnail:
-              "https://images.unsplash.com/photo-1636321187141-80858158d614?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600",
-            title: "Modern Refinery Complex",
-            description: "Professional refinery-linked coordination network",
-          },
-          {
-            type: "video",
-            src: "",
-            thumbnail:
-              "https://images.unsplash.com/photo-1573153178631-49e3aa9e018b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600",
-            title: "Industrial Excellence at Night",
-            description: "Round-the-clock energy operations and logistics flow",
-          },
-          {
-            type: "image",
-            src: "https://images.unsplash.com/photo-1670689334896-8fa8291daa27?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
-            thumbnail:
-              "https://images.unsplash.com/photo-1670689334896-8fa8291daa27?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600",
-            title: "Advanced Pipeline System",
-            description: "Sophisticated petroleum distribution infrastructure",
-          },
-          {
-            type: "image",
-            src: "https://images.unsplash.com/photo-1610273561721-d8272de02402?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
-            thumbnail:
-              "https://images.unsplash.com/photo-1610273561721-d8272de02402?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600",
-            title: "Urban Energy Hub",
-            description: "Energy infrastructure supporting commercial markets",
-          },
-        ]}
-      />
+      <Suspense fallback={<SectionLoader />}>
+        <PhotoGallery
+          title="Corporate Media & Energy Infrastructure"
+          subtitle="Operations Gallery"
+          items={[
+            {
+              type: "image",
+              src: refineryBackgrounds.storageTanks,
+              thumbnail: refineryBackgrounds.storageTanks,
+              title: "Storage Tank Infrastructure",
+              description:
+                "High-capacity petroleum storage and terminal support",
+            },
+            {
+              type: "image",
+              src: refineryBackgrounds.refineryOperations,
+              thumbnail: refineryBackgrounds.refineryOperations,
+              title: "Modern Refinery Complex",
+              description: "Professional refinery-linked coordination network",
+            },
+            {
+              type: "image",
+              src: refineryBackgrounds.pipelines,
+              thumbnail: refineryBackgrounds.pipelines,
+              title: "Advanced Pipeline System",
+              description: "Sophisticated petroleum distribution infrastructure",
+            },
+          ]}
+        />
+      </Suspense>
     </div>
   );
 }
