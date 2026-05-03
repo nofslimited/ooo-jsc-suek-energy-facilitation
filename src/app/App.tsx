@@ -1,13 +1,11 @@
-import { LanguageProvider } from "./components/context/LanguageContext";
-import { RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router";
 import { router } from "./routes";
+import { LanguageProvider } from "./components/context/LanguageContext";
 
-function App() {
+export default function App() {
   return (
     <LanguageProvider>
       <RouterProvider router={router} />
     </LanguageProvider>
   );
 }
-
-export default App;
