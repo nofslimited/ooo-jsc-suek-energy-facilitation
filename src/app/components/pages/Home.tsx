@@ -1,5 +1,5 @@
 import { ArrowRight, Factory, Globe, Award, TrendingUp, Shield, Users } from "lucide-react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { HeroSlider } from "../HeroSlider";
 import { ClientTestimonials } from "../ClientTestimonials";
 import { PhotoGallery } from "../PhotoGallery";

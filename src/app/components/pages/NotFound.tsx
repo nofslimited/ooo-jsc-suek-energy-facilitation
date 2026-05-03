@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { AlertCircle, ArrowLeft } from "lucide-react";
 
 export function NotFound() {

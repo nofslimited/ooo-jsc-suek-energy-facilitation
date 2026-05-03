@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router";
+import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import logoImg from "../../imports/c5803775-2a71-4c22-8c68-844632b07152-1.jpeg";

@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import logoImg from "../../imports/c5803775-2a71-4c22-8c68-844632b07152-1.jpeg";
 import { useLanguage } from "../context/LanguageContext";
 
