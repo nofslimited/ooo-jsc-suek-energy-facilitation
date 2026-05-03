@@ -1,6 +1,6 @@
 import { TrendingUp, DollarSign, PieChart, BarChart3 } from "lucide-react";
 import { PhotoGallery } from "../PhotoGallery";
-import { useLanguage } from "../context/LanguageContext";
+import { useLanguage } from "../../context/LanguageContext";
 
 export function Financial() {
   const { t } = useLanguage();

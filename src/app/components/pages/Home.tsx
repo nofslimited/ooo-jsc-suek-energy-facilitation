@@ -5,7 +5,7 @@ import { ClientTestimonials } from "../ClientTestimonials";
 import { PhotoGallery } from "../PhotoGallery";
 import { TrustBadges } from "../TrustBadges";
 import { VideoPlayer } from "../VideoPlayer";
-import { useLanguage } from "../context/LanguageContext";
+import { useLanguage } from "../../context/LanguageContext";
 
 export function Home() {
   const { t } = useLanguage();

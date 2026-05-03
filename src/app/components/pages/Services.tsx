@@ -2,7 +2,7 @@ import { Cog, BarChart, Headphones, Shield, Wrench, FileCheck } from "lucide-rea
 import { SafetyEnvironmental } from "../SafetyEnvironmental";
 import { PhotoGallery } from "../PhotoGallery";
 import { VideoPlayer } from "../VideoPlayer";
-import { useLanguage } from "../context/LanguageContext";
+import { useLanguage } from "../../context/LanguageContext";
 
 export function Services() {
   const { t } = useLanguage();

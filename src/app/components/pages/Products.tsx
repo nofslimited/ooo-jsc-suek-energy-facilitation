@@ -2,7 +2,7 @@ import { Droplets, Flame, Fuel, Zap } from "lucide-react";
 import { ProductSpecifications } from "../ProductSpecifications";
 import { PhotoGallery } from "../PhotoGallery";
 import { VideoPlayer } from "../VideoPlayer";
-import { useLanguage } from "../context/LanguageContext";
+import { useLanguage } from "../../context/LanguageContext";
 
 export function Products() {
   const { t } = useLanguage();
