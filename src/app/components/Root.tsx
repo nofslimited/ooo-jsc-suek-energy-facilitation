@@ -8,14 +8,27 @@ import { GoogleAdsCompliance } from "./GoogleAdsCompliance";
 
 export function Root() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen flex flex-col bg-white">
+      
+      {/* Top ticker */}
       <LiveMarketTicker />
+
+      {/* Navigation */}
       <Navigation />
-      <Outlet />
+
+      {/* Main Page Content */}
+      <main className="flex-1">
+        <Outlet />
+      </main>
+
+      {/* Bottom Sections */}
       <GoogleAdsCompliance />
       <LegalDisclaimer />
       <Footer />
+
+      {/* Floating Chat */}
       <LiveChat />
+
     </div>
   );
 }
