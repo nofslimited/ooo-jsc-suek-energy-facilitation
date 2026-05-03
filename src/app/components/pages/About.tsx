@@ -1,7 +1,7 @@
 import { Building, Users, Globe2, Award, Target, Sparkles } from "lucide-react";
 import { VideoShowcase } from "../VideoShowcase";
 import logoImg from "../../../imports/c5803775-2a71-4c22-8c68-844632b07152-1.jpeg";
-import { useLanguage } from "../context/LanguageContext";
+import { useLanguage } from "../../context/LanguageContext";
 
 export function About() {
   const { t } = useLanguage();

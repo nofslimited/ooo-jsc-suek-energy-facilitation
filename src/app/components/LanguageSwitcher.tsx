@@ -1,6 +1,6 @@
 import { Globe } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { useLanguage, Language } from "../context/LanguageContext";
+import { useLanguage, Language } from "../../context/LanguageContext";
 
 const languages: { code: Language; name: string; flag: string }[] = [
   { code: 'en', name: 'English', flag: '🇬🇧' },
