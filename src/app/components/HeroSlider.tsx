@@ -1,27 +1,25 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, ShieldCheck, Globe2, Factory } from "lucide-react";
 import { Link } from "react-router-dom";
+import { refineryBackgrounds } from "../assets/backgrounds";
 
 const slides = [
   {
-    image:
-      "https://images.unsplash.com/photo-1696541681346-b8787dbed51c?w=1600&q=80",
+    image: refineryBackgrounds.heroNight,
     eyebrow: "Global Energy Facilitation",
     title: "Petroleum Supply Coordination Built for Serious Buyers",
     description:
       "OOO JSC SUEK Energy Facilitation supports verified petroleum sourcing, refinery coordination, documentation guidance, and international logistics support.",
   },
   {
-    image:
-      "https://images.unsplash.com/photo-1630522521620-53f6e3f64aec?w=1600&q=80",
+    image: refineryBackgrounds.refineryOperations,
     eyebrow: "Refinery & Terminal Network",
     title: "Connecting Buyers, Suppliers, Refineries and Logistics Partners",
     description:
       "We help clients navigate energy transactions with structured communication, supplier verification support, and professional commercial coordination.",
   },
   {
-    image:
-      "https://images.unsplash.com/photo-1630522521616-b5b4cf458621?w=1600&q=80",
+    image: refineryBackgrounds.industrialNight,
     eyebrow: "Secure Energy Transactions",
     title: "Professional Facilitation for Petroleum Trade Operations",
     description:
@@ -47,16 +45,13 @@ export function HeroSlider() {
       {slides.map((slide, idx) => (
         <div
           key={slide.title}
-          className={`absolute inset-0 transition-opacity duration-1000 ${
+          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ${
             idx === currentSlide ? "opacity-100" : "opacity-0"
           }`}
-        >
-          <img
-            src={slide.image}
-            alt={slide.title}
-            className="h-full w-full object-cover"
-          />
-        </div>
+          style={{
+            backgroundImage: `url(${slide.image})`,
+          }}
+        />
       ))}
 
       <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-slate-950/35" />
@@ -72,9 +67,7 @@ export function HeroSlider() {
           </div>
 
           <h1 className="max-w-5xl text-5xl font-black leading-[0.95] tracking-tight md:text-7xl">
-            <span className="block text-white">
-              OOO JSC SUEK
-            </span>
+            <span className="block text-white">OOO JSC SUEK</span>
             <span className="mt-3 block bg-gradient-to-r from-amber-300 via-amber-500 to-orange-500 bg-clip-text text-transparent">
               Energy Facilitation
             </span>
