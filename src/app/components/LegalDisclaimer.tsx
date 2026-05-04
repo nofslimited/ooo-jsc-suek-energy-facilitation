@@ -19,7 +19,7 @@ export function LegalDisclaimer() {
                 <strong>Headquarters:</strong> Dubininskaya Ulitsa, 53, Building 7, Moscow, 115054, Russia
               </p>
               <p>
-                <strong>Official Website:</strong> www.ooojscsuek.ru | <strong>Contact:</strong> +7 926 503 82 48 | <strong>Email:</strong> jscsuek@inbox.ru
+                <strong>Official Website:</strong> www.ooojscsuek.ru | <strong>Contact:</strong> +7 926 503 82 48 | <strong>Email:</strong> info@ooojscsuek.ru
               </p>
             </div>
           </div>

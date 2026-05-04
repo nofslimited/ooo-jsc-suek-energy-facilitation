@@ -24,8 +24,8 @@ export function Footer() {
                 +7 926 503 82 48
               </a>
               <span className="text-slate-600">|</span>
-              <a href="mailto:jscsuek@inbox.ru" className="text-amber-500 hover:underline">
-                jscsuek@inbox.ru
+              <a href="mailto:jinfo@ooojscsuek.ru" className="text-amber-500 hover:underline">
+                info@ooojscsuek.ru
               </a>
             </div>
           </div>

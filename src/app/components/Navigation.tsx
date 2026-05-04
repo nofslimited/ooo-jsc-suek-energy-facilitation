@@ -40,11 +40,11 @@ export function Navigation() {
             </a>
 
             <a
-              href="mailto:jscsuek@inbox.ru"
+              href="mailto:info@ooojscsuek.ru"
               className="hidden items-center gap-2 transition hover:text-amber-300 lg:flex"
             >
               <Mail className="h-4 w-4 text-amber-400" />
-              jscsuek@inbox.ru
+              info@ooojscsuek.ru
             </a>
           </div>
         </div>
@@ -162,11 +162,11 @@ export function Navigation() {
               </a>
 
               <a
-                href="mailto:jscsuek@inbox.ru"
+                href="mailto:info@ooojscsuek.ru"
                 className="flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 text-sm font-bold text-white"
               >
                 <Mail className="h-4 w-4 text-amber-400" />
-                jscsuek@inbox.ru
+                info@ooojscsuek.ru
               </a>
 
               <Link

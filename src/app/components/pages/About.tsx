@@ -224,7 +224,7 @@ export function About() {
                 Phone: <a href="tel:+79265038248" className="text-amber-400 font-mono font-semibold hover:underline">+7 926 503 82 48</a>
               </p>
               <p className="text-lg">
-                Email: <a href="mailto:jscsuek@inbox.ru" className="text-amber-400 font-mono font-semibold hover:underline">jscsuek@inbox.ru</a>
+                Email: <a href="mailto:info@ooojscsuek.ru" className="text-amber-400 font-mono font-semibold hover:underline">info@ooojscsuek.ru</a>
               </p>
             </div>
           </div>

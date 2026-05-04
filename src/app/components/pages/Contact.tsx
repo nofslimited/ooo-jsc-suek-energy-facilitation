@@ -151,8 +151,8 @@ export function Contact() {
             icon: Mail,
             title: "Email Desk",
             text: "Send product, volume, and documentation details",
-            value: "jscsuek@inbox.ru",
-            href: "mailto:jscsuek@inbox.ru",
+            value: "info@ooojscsuek.ru",
+            href: "mailto:info@ooojscsuek.ru",
           },
           {
             icon: Globe2,

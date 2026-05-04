@@ -36,7 +36,7 @@ export function LiveChat() {
             <div className="text-center mt-3.5">
               <p className="text-slate-500 text-xs mb-1">Contact Information</p>
               <p className="text-slate-800 text-sm font-semibold">+7 926 503 82 48</p>
-              <p className="text-slate-600 text-xs">jscsuek@inbox.ru</p>
+              <p className="text-slate-600 text-xs">info@ooojscsuek.ru</p>
             </div>
           </div>
         </div>
