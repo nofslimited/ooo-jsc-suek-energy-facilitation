@@ -1,46 +1,46 @@
-/* =========================
-   TAILWIND CORE (REQUIRED)
-========================= */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-
-/* =========================
-   GLOBAL BASE STYLES
-========================= */
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  @apply bg-white text-slate-900 antialiased;
+  margin: 0;
+  background: #ffffff;
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-
-/* =========================
-   REUSABLE FORM INPUT STYLE
-========================= */
 .input {
-  @apply w-full px-4 py-3 border border-slate-300 rounded-lg 
-  focus:outline-none focus:ring-2 focus:ring-amber-500 
-  transition-all duration-200;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  outline: none;
+  transition: all 0.2s ease;
 }
 
+.input:focus {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35);
+}
 
-/* =========================
-   PREMIUM BUTTON (OPTIONAL)
-========================= */
 .btn-primary {
-  @apply bg-amber-500 text-slate-950 px-6 py-3 rounded-xl 
-  font-bold uppercase tracking-wide 
-  hover:bg-amber-400 transition-all;
+  background: #f59e0b;
+  color: #020617;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: all 0.2s ease;
 }
 
+.btn-primary:hover {
+  background: #fbbf24;
+}
 
-/* =========================
-   SCROLLBAR (PREMIUM UI)
-========================= */
 ::-webkit-scrollbar {
   width: 8px;
 }
