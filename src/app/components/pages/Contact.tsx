@@ -32,10 +32,41 @@ export function Contact() {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert("Inquiry received. Our team will contact you.");
-  };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  try {
+    const response = await fetch(
+      import.meta.env.VITE_API_BASE_URL + "/contact",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to send message");
+    }
+
+    alert("✅ Inquiry submitted successfully. Our team will contact you.");
+
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      company: "",
+      subject: "",
+      message: "",
+    });
+
+  } catch (error) {
+    console.error(error);
+    alert("❌ Failed to send message. Please try again.");
+  }
+};
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
