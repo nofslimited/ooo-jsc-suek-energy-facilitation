@@ -29,19 +29,18 @@ const slides = [
 
 export function HeroSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const active = slides[currentSlide];
 
   useEffect(() => {
-    const timer = setInterval(() => {
+    const timer = window.setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 6500);
 
-    return () => clearInterval(timer);
+    return () => window.clearInterval(timer);
   }, []);
 
-  const active = slides[currentSlide];
-
   return (
-    <section className="relative min-h-[720px] overflow-hidden bg-slate-950 text-white">
+    <section className="relative min-h-[620px] overflow-hidden bg-slate-950 text-white md:min-h-[720px]">
       {slides.map((slide, idx) => (
         <div
           key={slide.title}
@@ -50,14 +49,16 @@ export function HeroSlider() {
           }`}
           style={{
             backgroundImage: `url(${slide.image})`,
+            willChange: "opacity",
           }}
+          aria-hidden={idx !== currentSlide}
         />
       ))}
 
       <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-slate-950/35" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(37,99,235,0.18),transparent_35%)]" />
 
-      <div className="relative z-10 mx-auto flex min-h-[720px] max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto flex min-h-[620px] max-w-7xl items-center px-4 py-20 sm:px-6 lg:px-8 md:min-h-[720px]">
         <div className="max-w-4xl">
           <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-amber-400/30 bg-amber-400/10 px-5 py-2">
             <span className="h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_20px_rgba(251,191,36,0.8)]" />
@@ -73,7 +74,7 @@ export function HeroSlider() {
             </span>
           </h1>
 
-          <p className="mt-8 max-w-2xl text-xl leading-8 text-slate-200">
+          <p className="mt-8 max-w-2xl text-lg leading-8 text-slate-200 md:text-xl">
             {active.description}
           </p>
 
@@ -102,7 +103,7 @@ export function HeroSlider() {
             ].map((item) => (
               <div
                 key={item.title}
-                className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur"
+                className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur transition hover:border-amber-400/40 hover:bg-white/15"
               >
                 <item.icon className="mb-3 h-6 w-6 text-amber-400" />
                 <p className="text-sm font-bold text-white">{item.title}</p>
@@ -116,7 +117,9 @@ export function HeroSlider() {
         {slides.map((slide, idx) => (
           <button
             key={slide.title}
+            type="button"
             onClick={() => setCurrentSlide(idx)}
+            aria-label={`Go to slide ${idx + 1}`}
             className={`h-1 rounded-full transition-all ${
               idx === currentSlide ? "w-12 bg-amber-400" : "w-7 bg-white/30"
             }`}
