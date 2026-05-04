@@ -1,6 +1,5 @@
 import os
-import smtplib
-from email.message import EmailMessage
+import requests
 
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
@@ -9,10 +8,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from .database import SessionLocal, engine, Base
 from . import models, schemas
 
+# Create DB tables
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="OOO JSC SUEK Backend")
 
+# CORS (adjust later if needed)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -27,7 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+# Database dependency
 def get_db():
     db = SessionLocal()
     try:
@@ -36,26 +37,30 @@ def get_db():
         db.close()
 
 
+# 🔥 SENDGRID EMAIL FUNCTION
 def send_email_notification(contact: schemas.ContactCreate):
-    smtp_host = os.getenv("SMTP_HOST")
-    smtp_port = int(os.getenv("SMTP_PORT", "587"))
-    smtp_user = os.getenv("SMTP_USER")
-    smtp_password = os.getenv("SMTP_PASSWORD")
-    notification_to = os.getenv("NOTIFICATION_TO", "info@ooojscsuek.ru")
-    notification_from = os.getenv("NOTIFICATION_FROM", smtp_user or "info@ooojscsuek.ru")
+    api_key = os.getenv("SENDGRID_API_KEY")
+    email_from = os.getenv("EMAIL_FROM")
+    email_to = os.getenv("EMAIL_TO")
 
-    if not smtp_host or not smtp_user or not smtp_password:
-        print("Email notification skipped: SMTP settings are missing.")
+    if not api_key:
+        print("SendGrid API key missing")
         return
 
-    msg = EmailMessage()
-    msg["Subject"] = f"New Website Inquiry: {contact.subject}"
-    msg["From"] = notification_from
-    msg["To"] = notification_to
-
-    msg.set_content(
-        f"""
-New website inquiry received.
+    data = {
+        "personalizations": [
+            {
+                "to": [{"email": email_to}],
+                "subject": f"New Inquiry: {contact.subject}",
+            }
+        ],
+        "from": {"email": email_from},
+        "reply_to": {"email": contact.email},
+        "content": [
+            {
+                "type": "text/plain",
+                "value": f"""
+New Website Inquiry
 
 Name: {contact.name}
 Email: {contact.email}
@@ -65,15 +70,28 @@ Subject: {contact.subject}
 
 Message:
 {contact.message}
-"""
-    )
+""",
+            }
+        ],
+    }
 
-    with smtplib.SMTP(smtp_host, smtp_port) as server:
-        server.starttls()
-        server.login(smtp_user, smtp_password)
-        server.send_message(msg)
+    try:
+        response = requests.post(
+            "https://api.sendgrid.com/v3/mail/send",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            json=data,
+        )
+
+        print("SendGrid response:", response.status_code, response.text)
+
+    except Exception as e:
+        print("SendGrid error:", str(e))
 
 
+# Health check (so "/" no longer shows Not Found)
 @app.get("/")
 def health_check():
     return {
@@ -83,6 +101,7 @@ def health_check():
     }
 
 
+# ✅ CREATE CONTACT
 @app.post("/contact", response_model=schemas.ContactRead)
 def create_contact(contact: schemas.ContactCreate, db: Session = Depends(get_db)):
     db_contact = models.Contact(**contact.model_dump())
@@ -90,14 +109,13 @@ def create_contact(contact: schemas.ContactCreate, db: Session = Depends(get_db)
     db.commit()
     db.refresh(db_contact)
 
-    try:
-        send_email_notification(contact)
-    except Exception as error:
-        print(f"Email notification failed: {error}")
+    # Send email
+    send_email_notification(contact)
 
     return db_contact
 
 
+# ✅ GET CONTACTS
 @app.get("/contacts", response_model=list[schemas.ContactRead])
 def get_contacts(db: Session = Depends(get_db)):
     return db.query(models.Contact).order_by(models.Contact.id.desc()).all()
