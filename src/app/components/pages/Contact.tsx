@@ -40,19 +40,22 @@ const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
   try {
-    const response = await fetch("http://127.0.0.1:8000/contact", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    const response = await fetch(
+      "https://name-ooo-jsc-suek-backend.onrender.com/contact",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
 
     if (!response.ok) {
-      throw new Error("Failed to send message");
+      throw new Error("Failed to submit inquiry");
     }
 
-    alert("✅ Message sent successfully!");
+    alert("✅ Inquiry submitted successfully. Our team will contact you.");
 
     setFormData({
       name: "",
@@ -64,7 +67,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     });
   } catch (error) {
     console.error(error);
-    alert("❌ Error sending message. Please try again.");
+    alert("❌ Inquiry could not be submitted. Please try again.");
   }
 };
 
