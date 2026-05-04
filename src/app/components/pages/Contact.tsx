@@ -26,6 +26,7 @@ const SectionLoader = () => (
 
 export function Contact() {
   const { t } = useLanguage();
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -36,40 +37,55 @@ export function Contact() {
     message: "",
   });
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    const response = await fetch(
-      "https://name-ooo-jsc-suek-backend.onrender.com/contact",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to submit inquiry");
+    if (!formData.email.includes("@")) {
+      alert("Please enter a valid email address.");
+      setLoading(false);
+      return;
     }
 
-    alert("✅ Inquiry submitted successfully. Our team will contact you.");
+    if (formData.message.trim().length < 5) {
+      alert("Please provide more details about your inquiry.");
+      setLoading(false);
+      return;
+    }
 
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      company: "",
-      subject: "",
-      message: "",
-    });
-  } catch (error) {
-    console.error(error);
-    alert("❌ Inquiry could not be submitted. Please try again.");
-  }
-};
+    try {
+      const response = await fetch(
+        "https://name-ooo-jsc-suek-backend.onrender.com/contact",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to submit inquiry");
+      }
+
+      alert("✅ Inquiry submitted successfully. Our team will contact you.");
+
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        company: "",
+        subject: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error(error);
+      alert("❌ Inquiry could not be submitted. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -179,8 +195,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             </h2>
             <p className="mt-3 leading-7 text-slate-600">
               Share your product type, required volume, destination, company
-              details, and documentation expectations. Backend delivery will be
-              connected in the next phase.
+              details, and documentation expectations. Your inquiry will be
+              securely sent to our backend lead system.
             </p>
           </div>
 
@@ -256,10 +272,11 @@ const handleSubmit = async (e: React.FormEvent) => {
 
             <button
               type="submit"
-              className="flex w-full items-center justify-center gap-3 rounded-xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-[0.16em] text-slate-950 transition hover:bg-amber-400"
+              disabled={loading}
+              className="flex w-full items-center justify-center gap-3 rounded-xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-[0.16em] text-slate-950 transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Send className="h-5 w-5" />
-              Submit Inquiry
+              {loading ? "Sending Inquiry..." : "Submit Inquiry"}
             </button>
           </form>
         </div>
