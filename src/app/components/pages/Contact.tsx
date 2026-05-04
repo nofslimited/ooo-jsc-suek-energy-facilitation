@@ -36,10 +36,23 @@ export function Contact() {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    alert("Inquiry received. Our team will contact you.");
+  try {
+    const response = await fetch("http://127.0.0.1:8000/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to send message");
+    }
+
+    alert("✅ Message sent successfully!");
 
     setFormData({
       name: "",
@@ -49,7 +62,11 @@ export function Contact() {
       subject: "",
       message: "",
     });
-  };
+  } catch (error) {
+    console.error(error);
+    alert("❌ Error sending message. Please try again.");
+  }
+};
 
   const handleChange = (
     e: React.ChangeEvent<
