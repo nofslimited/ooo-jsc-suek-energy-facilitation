@@ -1,0 +1,55 @@
+/* =========================
+   TAILWIND CORE (REQUIRED)
+========================= */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* =========================
+   GLOBAL BASE STYLES
+========================= */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-white text-slate-900 antialiased;
+}
+
+
+/* =========================
+   REUSABLE FORM INPUT STYLE
+========================= */
+.input {
+  @apply w-full px-4 py-3 border border-slate-300 rounded-lg 
+  focus:outline-none focus:ring-2 focus:ring-amber-500 
+  transition-all duration-200;
+}
+
+
+/* =========================
+   PREMIUM BUTTON (OPTIONAL)
+========================= */
+.btn-primary {
+  @apply bg-amber-500 text-slate-950 px-6 py-3 rounded-xl 
+  font-bold uppercase tracking-wide 
+  hover:bg-amber-400 transition-all;
+}
+
+
+/* =========================
+   SCROLLBAR (PREMIUM UI)
+========================= */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f59e0b;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
