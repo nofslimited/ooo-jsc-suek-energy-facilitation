@@ -1,5 +1,5 @@
 import os
-import requests
+import resend
 
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
@@ -13,7 +13,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="OOO JSC SUEK Backend")
 
-# CORS (adjust later if needed)
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -37,61 +37,40 @@ def get_db():
         db.close()
 
 
-# 🔥 SENDGRID EMAIL FUNCTION
+# 🔥 RESEND EMAIL FUNCTION
 def send_email_notification(contact: schemas.ContactCreate):
-    api_key = os.getenv("SENDGRID_API_KEY")
-    email_from = os.getenv("EMAIL_FROM")
-    email_to = os.getenv("EMAIL_TO")
+    api_key = os.getenv("RESEND_API_KEY")
 
     if not api_key:
-        print("SendGrid API key missing")
+        print("Resend API key missing")
         return
 
-    data = {
-        "personalizations": [
-            {
-                "to": [{"email": email_to}],
-                "subject": f"New Inquiry: {contact.subject}",
-            }
-        ],
-        "from": {"email": email_from},
-        "reply_to": {"email": contact.email},
-        "content": [
-            {
-                "type": "text/plain",
-                "value": f"""
-New Website Inquiry
-
-Name: {contact.name}
-Email: {contact.email}
-Phone: {contact.phone or "Not provided"}
-Company: {contact.company or "Not provided"}
-Subject: {contact.subject}
-
-Message:
-{contact.message}
-""",
-            }
-        ],
-    }
+    resend.api_key = api_key
 
     try:
-        response = requests.post(
-            "https://api.sendgrid.com/v3/mail/send",
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
-            },
-            json=data,
-        )
+        resend.Emails.send({
+            "from": "onboarding@resend.dev",  # temporary sender (works instantly)
+            "to": "info@ooojscsuek.ru",
+            "subject": f"New Inquiry: {contact.subject}",
+            "html": f"""
+                <h2>New Website Inquiry</h2>
+                <p><strong>Name:</strong> {contact.name}</p>
+                <p><strong>Email:</strong> {contact.email}</p>
+                <p><strong>Phone:</strong> {contact.phone or "Not provided"}</p>
+                <p><strong>Company:</strong> {contact.company or "Not provided"}</p>
+                <p><strong>Subject:</strong> {contact.subject}</p>
+                <hr/>
+                <p>{contact.message}</p>
+            """
+        })
 
-        print("SendGrid response:", response.status_code, response.text)
+        print("Email sent successfully via Resend")
 
     except Exception as e:
-        print("SendGrid error:", str(e))
+        print("Resend error:", str(e))
 
 
-# Health check (so "/" no longer shows Not Found)
+# Health check
 @app.get("/")
 def health_check():
     return {
