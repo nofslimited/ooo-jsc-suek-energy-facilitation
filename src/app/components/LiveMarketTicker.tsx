@@ -35,15 +35,15 @@ export function LiveMarketTicker() {
   return (
     <div className="h-9 overflow-hidden border-b border-amber-500/20 bg-slate-950 text-white">
       <div className="flex h-full items-center">
-        <div className="flex h-full flex-shrink-0 items-center bg-amber-500 px-4">
+        <div className="z-10 flex h-full flex-shrink-0 items-center bg-amber-500 px-4">
           <span className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-950">
             Live Markets
           </span>
         </div>
 
-        <div className="flex-1 overflow-hidden">
-          <div className="flex min-w-max animate-[scroll_40s_linear_infinite] hover:[animation-play-state:paused]">
-            {[...markets, ...markets].map((market, idx) => (
+        <div className="relative flex-1 overflow-hidden">
+          <div className="live-market-scroll flex h-full min-w-max items-center">
+            {[...markets, ...markets, ...markets].map((market, idx) => (
               <div
                 key={`${market.symbol}-${idx}`}
                 className="flex items-center gap-2 whitespace-nowrap px-7 text-[10px] font-black uppercase tracking-[0.12em]"
@@ -64,6 +64,26 @@ export function LiveMarketTicker() {
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes liveMarketScroll {
+          0% {
+            transform: translateX(0);
+          }
+
+          100% {
+            transform: translateX(-33.333%);
+          }
+        }
+
+        .live-market-scroll {
+          animation: liveMarketScroll 45s linear infinite;
+        }
+
+        .live-market-scroll:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
     </div>
   );
 }

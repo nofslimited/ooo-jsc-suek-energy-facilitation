@@ -1,27 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
-import {
-  Menu,
-  X,
-  Phone,
-  ShieldCheck,
-  Mail,
-  TrendingUp,
-} from "lucide-react";
+import { Menu, X, Phone, ShieldCheck, Mail } from "lucide-react";
 import { useState } from "react";
 import logoImg from "../../imports/c5803775-2a71-4c22-8c68-844632b07152-1.jpeg";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { LiveMarketTicker } from "./LiveMarketTicker";
 import { useLanguage } from "../context/LanguageContext";
-
-const marketItems = [
-  "Brent Crude $83.42 ▲ 1.18%",
-  "WTI Crude $79.36 ▲ 0.94%",
-  "Diesel EN590 $742/MT ▲ 0.72%",
-  "Jet A-1 $815/MT ▲ 0.61%",
-  "Gasoline RON 95 $768/MT ▲ 0.83%",
-  "LPG $486/MT ▲ 0.45%",
-  "RUB/USD 91.24 ▼ 0.21%",
-  "MOEX Energy ▲ 0.66%",
-];
 
 export function Navigation() {
   const location = useLocation();
@@ -41,21 +24,7 @@ export function Navigation() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-slate-950/95 text-white shadow-2xl shadow-slate-950/30 backdrop-blur-xl">
-      <div className="border-b border-amber-500/20 bg-slate-950">
-        <div className="flex overflow-hidden whitespace-nowrap py-2">
-          <div className="flex min-w-max animate-[ticker_35s_linear_infinite] items-center gap-8 px-6">
-            {[...marketItems, ...marketItems].map((item, index) => (
-              <div
-                key={`${item}-${index}`}
-                className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.18em] text-slate-300"
-              >
-                <TrendingUp className="h-3.5 w-3.5 text-amber-400" />
-                <span>{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <LiveMarketTicker />
 
       <div className="hidden border-b border-white/10 bg-slate-900/90 md:block">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
