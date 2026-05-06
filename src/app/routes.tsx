@@ -8,6 +8,7 @@ import { About } from "./components/pages/About";
 import { Financial } from "./components/pages/Financial";
 import { News } from "./components/pages/News";
 import { Contact } from "./components/pages/Contact";
+import { AdminDashboard } from "./components/pages/AdminDashboard";
 import { NotFound } from "./components/pages/NotFound";
 
 export const router = createBrowserRouter([
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
       { path: "financial", Component: Financial },
       { path: "news", Component: News },
       { path: "contact", Component: Contact },
+      { path: "admin-dashboard", Component: AdminDashboard },
       { path: "*", Component: NotFound },
     ],
   },
