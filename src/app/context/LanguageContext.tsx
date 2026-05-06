@@ -55,10 +55,16 @@ const translations: Record<Language, Record<string, string>> = {
     "contact.title": "Contact Our Energy Desk",
     "contact.subtitle":
       "Send your petroleum product inquiry, destination, volume, and documentation requirements.",
+
+    "footer.company": "Company",
+    "footer.certifications": "Certifications",
+    "footer.copyright":
+      "© 2026 OOO JSC SUEK Energy Facilitation. All rights reserved.",
   },
 
   ru: {
     "common.close": "Закрыть",
+
     "nav.home": "Главная",
     "nav.fleet": "Логистика",
     "nav.products": "Продукты",
@@ -96,10 +102,16 @@ const translations: Record<Language, Record<string, string>> = {
     "contact.title": "Свяжитесь с энергетическим отделом",
     "contact.subtitle":
       "Отправьте запрос по нефтепродуктам, пункту назначения, объёму и требованиям к документации.",
+
+    "footer.company": "Компания",
+    "footer.certifications": "Сертификации",
+    "footer.copyright":
+      "© 2026 OOO JSC SUEK Energy Facilitation. Все права защищены.",
   },
 
   ar: {
     "common.close": "إغلاق",
+
     "nav.home": "الرئيسية",
     "nav.fleet": "الأسطول",
     "nav.products": "المنتجات",
@@ -137,10 +149,16 @@ const translations: Record<Language, Record<string, string>> = {
     "contact.title": "اتصل بمكتب الطاقة",
     "contact.subtitle":
       "أرسل استفسارك عن المنتج البترولي، والوجهة، والكمية، ومتطلبات الوثائق.",
+
+    "footer.company": "الشركة",
+    "footer.certifications": "الشهادات",
+    "footer.copyright":
+      "© 2026 OOO JSC SUEK Energy Facilitation. جميع الحقوق محفوظة.",
   },
 
   zh: {
     "common.close": "关闭",
+
     "nav.home": "首页",
     "nav.fleet": "车队",
     "nav.products": "产品",
@@ -178,10 +196,16 @@ const translations: Record<Language, Record<string, string>> = {
     "contact.title": "联系能源业务台",
     "contact.subtitle":
       "发送您的石油产品需求、目的地、数量和文件要求。",
+
+    "footer.company": "公司",
+    "footer.certifications": "认证",
+    "footer.copyright":
+      "© 2026 OOO JSC SUEK Energy Facilitation 版权所有。",
   },
 
   fr: {
     "common.close": "Fermer",
+
     "nav.home": "Accueil",
     "nav.fleet": "Flotte",
     "nav.products": "Produits",
@@ -219,6 +243,11 @@ const translations: Record<Language, Record<string, string>> = {
     "contact.title": "Contactez notre bureau énergie",
     "contact.subtitle":
       "Envoyez votre demande de produit pétrolier, destination, volume et exigences documentaires.",
+
+    "footer.company": "Entreprise",
+    "footer.certifications": "Certifications",
+    "footer.copyright":
+      "© 2026 OOO JSC SUEK Energy Facilitation. Tous droits réservés.",
   },
 };
 
@@ -234,7 +263,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       language,
       setLanguage,
       t: (key: string) =>
-  translations[language]?.[key] || translations.en[key] || key,
+        translations[language]?.[key] || translations.en[key] || key,
     };
   }, [language]);
 
