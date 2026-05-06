@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { TrendingUp, TrendingDown } from "lucide-react";
 
 interface MarketData {
   name: string;
@@ -21,41 +20,44 @@ export function LiveMarketTicker() {
   ]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setMarkets(prev =>
-        prev.map(market => ({
+    const interval = window.setInterval(() => {
+      setMarkets((prev) =>
+        prev.map((market) => ({
           ...market,
-          change: parseFloat(((Math.random() - 0.5) * 3).toFixed(2)),
+          change: Number(((Math.random() - 0.5) * 3).toFixed(2)),
         }))
       );
     }, 8000);
 
-    return () => clearInterval(interval);
+    return () => window.clearInterval(interval);
   }, []);
 
   return (
-    <div className="bg-slate-950 text-white border-b border-amber-500/20 overflow-hidden h-9">
-      <div className="flex items-center h-full">
-        <div className="bg-amber-500 px-4 h-full flex items-center flex-shrink-0">
-          <span className="text-slate-950 text-[10px] font-mono font-medium tracking-[0.15em] uppercase">
+    <div className="h-9 overflow-hidden border-b border-amber-500/20 bg-slate-950 text-white">
+      <div className="flex h-full items-center">
+        <div className="flex h-full flex-shrink-0 items-center bg-amber-500 px-4">
+          <span className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-950">
             Live Markets
           </span>
         </div>
+
         <div className="flex-1 overflow-hidden">
-          <div className="flex animate-[scroll_40s_linear_infinite] hover:[animation-play-state:paused]">
+          <div className="flex min-w-max animate-[scroll_40s_linear_infinite] hover:[animation-play-state:paused]">
             {[...markets, ...markets].map((market, idx) => (
               <div
-                key={idx}
-                className="flex items-center gap-2 px-7 whitespace-nowrap font-mono text-[10px]"
+                key={`${market.symbol}-${idx}`}
+                className="flex items-center gap-2 whitespace-nowrap px-7 text-[10px] font-black uppercase tracking-[0.12em]"
+                title={market.name}
               >
-                <span className="text-slate-300 font-medium">{market.symbol}</span>
+                <span className="text-slate-300">{market.symbol}</span>
                 <span className="text-slate-400">{market.price}</span>
                 <span
                   className={`flex items-center gap-1 ${
                     market.change >= 0 ? "text-green-400" : "text-red-400"
                   }`}
                 >
-                  {market.change >= 0 ? "▲" : "▼"} {Math.abs(market.change).toFixed(2)}%
+                  {market.change >= 0 ? "▲" : "▼"}{" "}
+                  {Math.abs(market.change).toFixed(2)}%
                 </span>
               </div>
             ))}
