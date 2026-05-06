@@ -1,4 +1,7 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+
+
+# ================= CONTACT =================
 
 class ContactCreate(BaseModel):
     name: str
@@ -12,5 +15,4 @@ class ContactCreate(BaseModel):
 class ContactRead(ContactCreate):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
