@@ -47,27 +47,34 @@ def send_email_notification(contact: schemas.ContactCreate):
 
     resend.api_key = api_key
 
+    email_from = os.getenv("EMAIL_FROM")
+    email_to = os.getenv("EMAIL_TO")
+
     try:
-        resend.Emails.send({
-            "from": "onboarding@resend.dev",  # temporary sender (works instantly)
-            "to": "info@ooojscsuek.ru",
+        response = resend.Emails.send({
+            "from": email_from,
+            "to": email_to,
             "subject": f"New Inquiry: {contact.subject}",
             "html": f"""
                 <h2>New Website Inquiry</h2>
-                <p><strong>Name:</strong> {contact.name}</p>
+
+                <p><strong>Full Name:</strong> {contact.full_name}</p>
                 <p><strong>Email:</strong> {contact.email}</p>
-                <p><strong>Phone:</strong> {contact.phone or "Not provided"}</p>
-                <p><strong>Company:</strong> {contact.company or "Not provided"}</p>
+                <p><strong>Phone:</strong> {contact.phone}</p>
+                <p><strong>Company:</strong> {contact.company}</p>
                 <p><strong>Subject:</strong> {contact.subject}</p>
-                <hr/>
+
+                <hr>
+
+                <p><strong>Message:</strong></p>
                 <p>{contact.message}</p>
             """
         })
 
-        print("Email sent successfully via Resend")
+        print("Resend response:", response)
 
     except Exception as e:
-        print("Resend error:", str(e))
+        print("Resend error:", e)
 
 
 # Health check
