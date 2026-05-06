@@ -3,7 +3,6 @@ import { Menu, X, Phone, ShieldCheck, Mail } from "lucide-react";
 import { useState } from "react";
 import logoImg from "../../imports/c5803775-2a71-4c22-8c68-844632b07152-1.jpeg";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { LiveMarketTicker } from "./LiveMarketTicker";
 import { useLanguage } from "../context/LanguageContext";
 
 export function Navigation() {
@@ -24,8 +23,6 @@ export function Navigation() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-slate-950/95 text-white shadow-2xl shadow-slate-950/30 backdrop-blur-xl">
-      <LiveMarketTicker />
-
       <div className="hidden border-b border-white/10 bg-slate-900/90 md:block">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.18em] text-slate-300">
