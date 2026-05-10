@@ -20,7 +20,7 @@ interface ContactInquiry {
 
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL ||
-  "https://ooo-jsc-suek-backend.onrender.com";
+  "https://name-ooo-jsc-suek-backend.onrender.com";
 
 export function AdminDashboard() {
   const [inquiries, setInquiries] = useState<ContactInquiry[]>([]);
