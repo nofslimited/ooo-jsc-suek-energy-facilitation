@@ -19,6 +19,7 @@ export function Navigation() {
     { name: t("nav.about"), path: "/about" },
     { name: t("nav.financial"), path: "/financial" },
     { name: t("nav.news"), path: "/news" },
+    { name: "Admin", path: "/admin-dashboard" },
     { name: t("nav.contact"), path: "/contact" },
   ];
 
