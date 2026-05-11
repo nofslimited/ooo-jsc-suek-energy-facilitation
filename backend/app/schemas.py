@@ -1,8 +1,5 @@
-from datetime import datetime
 from pydantic import BaseModel, ConfigDict
 
-
-# ================= CONTACT =================
 
 class ContactCreate(BaseModel):
     name: str
@@ -15,6 +12,5 @@ class ContactCreate(BaseModel):
 
 class ContactRead(ContactCreate):
     id: int
-    created_at: datetime | None = None
 
     model_config = ConfigDict(from_attributes=True)
