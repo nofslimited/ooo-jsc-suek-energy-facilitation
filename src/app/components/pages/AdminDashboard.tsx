@@ -8,7 +8,7 @@ import {
   MessageSquare,
   Inbox,
   LogOut,
-  CalendarClock,
+  Trash2,
 } from "lucide-react";
 
 interface ContactInquiry {
@@ -19,41 +19,19 @@ interface ContactInquiry {
   company?: string;
   subject: string;
   message: string;
-  created_at?: string | null;
 }
 
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL ||
   "https://name-ooo-jsc-suek-backend.onrender.com";
 
-function formatDateTime(value?: string | null) {
-  if (!value) return "Date not available";
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return "Date not available";
-  }
-
-  return new Intl.DateTimeFormat("en-GB", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(date);
-}
-
 export function AdminDashboard() {
   const navigate = useNavigate();
   const [inquiries, setInquiries] = useState<ContactInquiry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  useEffect(() => {
-    const loggedIn = localStorage.getItem("suek_admin_logged_in");
-
-    if (loggedIn !== "true") {
-      navigate("/admin-login");
-      return;
-    }
-
+  const loadInquiries = () => {
     fetch(`${API_BASE}/contacts`)
       .then((res) => res.json())
       .then((data) => {
@@ -64,11 +42,49 @@ export function AdminDashboard() {
         console.error("Failed to load inquiries:", err);
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    const loggedIn = localStorage.getItem("suek_admin_logged_in");
+
+    if (loggedIn !== "true") {
+      navigate("/admin-login");
+      return;
+    }
+
+    loadInquiries();
   }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("suek_admin_logged_in");
     navigate("/admin-login");
+  };
+
+  const handleDelete = async (id: number) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete Inquiry #${id}?`
+    );
+
+    if (!confirmed) return;
+
+    setDeletingId(id);
+
+    try {
+      const response = await fetch(`${API_BASE}/contacts/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete inquiry");
+      }
+
+      setInquiries((prev) => prev.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete inquiry. Please try again.");
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   return (
@@ -117,14 +133,9 @@ export function AdminDashboard() {
               >
                 <div className="mb-6 flex flex-col gap-4 border-b border-white/10 pb-5 lg:flex-row lg:items-center lg:justify-between">
                   <div>
-                    <div className="mb-2 flex flex-wrap items-center gap-2">
+                    <div className="mb-2 flex items-center gap-2">
                       <span className="rounded-full bg-amber-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-amber-400">
                         Inquiry #{inquiry.id}
-                      </span>
-
-                      <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-slate-300">
-                        <CalendarClock className="h-3.5 w-3.5 text-amber-400" />
-                        {formatDateTime(inquiry.created_at)}
                       </span>
                     </div>
 
@@ -132,6 +143,15 @@ export function AdminDashboard() {
                       {inquiry.subject}
                     </h2>
                   </div>
+
+                  <button
+                    onClick={() => handleDelete(inquiry.id)}
+                    disabled={deletingId === inquiry.id}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm font-bold text-red-300 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    {deletingId === inquiry.id ? "Deleting..." : "Delete"}
+                  </button>
                 </div>
 
                 <div className="grid gap-5 md:grid-cols-2">
