@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Mail,
   Phone,
@@ -6,6 +7,7 @@ import {
   User,
   MessageSquare,
   Inbox,
+  LogOut,
 } from "lucide-react";
 
 interface ContactInquiry {
@@ -23,10 +25,18 @@ const API_BASE =
   "https://name-ooo-jsc-suek-backend.onrender.com";
 
 export function AdminDashboard() {
+  const navigate = useNavigate();
   const [inquiries, setInquiries] = useState<ContactInquiry[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const loggedIn = localStorage.getItem("suek_admin_logged_in");
+
+    if (loggedIn !== "true") {
+      navigate("/admin-login");
+      return;
+    }
+
     fetch(`${API_BASE}/contacts`)
       .then((res) => res.json())
       .then((data) => {
@@ -37,25 +47,40 @@ export function AdminDashboard() {
         console.error("Failed to load inquiries:", err);
         setLoading(false);
       });
-  }, []);
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("suek_admin_logged_in");
+    navigate("/admin-login");
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 px-4 py-10 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-10 flex items-center gap-4">
-          <div className="rounded-2xl bg-amber-500/10 p-4">
-            <Inbox className="h-8 w-8 text-amber-400" />
+        <div className="mb-10 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center gap-4">
+            <div className="rounded-2xl bg-amber-500/10 p-4">
+              <Inbox className="h-8 w-8 text-amber-400" />
+            </div>
+
+            <div>
+              <h1 className="text-3xl font-black uppercase tracking-[0.14em] text-white">
+                Admin Dashboard
+              </h1>
+
+              <p className="mt-2 text-sm text-slate-400">
+                Website contact inquiries and communication requests.
+              </p>
+            </div>
           </div>
 
-          <div>
-            <h1 className="text-3xl font-black uppercase tracking-[0.14em] text-white">
-              Admin Dashboard
-            </h1>
-
-            <p className="mt-2 text-sm text-slate-400">
-              Website contact inquiries and communication requests.
-            </p>
-          </div>
+          <button
+            onClick={handleLogout}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/20"
+          >
+            <LogOut className="h-4 w-4" />
+            Logout
+          </button>
         </div>
 
         {loading ? (
@@ -96,9 +121,7 @@ export function AdminDashboard() {
                       </span>
                     </div>
 
-                    <p className="text-sm text-slate-300">
-                      {inquiry.name}
-                    </p>
+                    <p className="text-sm text-slate-300">{inquiry.name}</p>
                   </div>
 
                   <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4">

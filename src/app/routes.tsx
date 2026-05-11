@@ -8,6 +8,7 @@ import { About } from "./components/pages/About";
 import { Financial } from "./components/pages/Financial";
 import { News } from "./components/pages/News";
 import { Contact } from "./components/pages/Contact";
+import { AdminLogin } from "./components/pages/AdminLogin";
 import { AdminDashboard } from "./components/pages/AdminDashboard";
 import { NotFound } from "./components/pages/NotFound";
 
@@ -24,6 +25,7 @@ export const router = createHashRouter([
       { path: "financial", Component: Financial },
       { path: "news", Component: News },
       { path: "contact", Component: Contact },
+      { path: "admin-login", Component: AdminLogin },
       { path: "admin-dashboard", Component: AdminDashboard },
       { path: "*", Component: NotFound },
     ],
