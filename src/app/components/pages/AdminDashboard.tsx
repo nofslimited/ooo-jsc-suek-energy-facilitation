@@ -8,6 +8,7 @@ import {
   MessageSquare,
   Inbox,
   LogOut,
+  CalendarClock,
 } from "lucide-react";
 
 interface ContactInquiry {
@@ -18,11 +19,27 @@ interface ContactInquiry {
   company?: string;
   subject: string;
   message: string;
+  created_at?: string | null;
 }
 
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL ||
   "https://name-ooo-jsc-suek-backend.onrender.com";
+
+function formatDateTime(value?: string | null) {
+  if (!value) return "Date not available";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Date not available";
+  }
+
+  return new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+}
 
 export function AdminDashboard() {
   const navigate = useNavigate();
@@ -100,9 +117,14 @@ export function AdminDashboard() {
               >
                 <div className="mb-6 flex flex-col gap-4 border-b border-white/10 pb-5 lg:flex-row lg:items-center lg:justify-between">
                   <div>
-                    <div className="mb-2 flex items-center gap-2">
+                    <div className="mb-2 flex flex-wrap items-center gap-2">
                       <span className="rounded-full bg-amber-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-amber-400">
                         Inquiry #{inquiry.id}
+                      </span>
+
+                      <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-slate-300">
+                        <CalendarClock className="h-3.5 w-3.5 text-amber-400" />
+                        {formatDateTime(inquiry.created_at)}
                       </span>
                     </div>
 
