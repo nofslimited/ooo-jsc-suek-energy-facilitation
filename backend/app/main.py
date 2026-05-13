@@ -1,34 +1,16 @@
 import os
 import resend
 
-from fastapi import FastAPI, Depends, HTTPException, Request
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
-
-from slowapi import Limiter
-from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
-from slowapi.middleware import SlowAPIMiddleware
 
 from .database import SessionLocal, engine, Base
 from . import models, schemas
 
 Base.metadata.create_all(bind=engine)
 
-limiter = Limiter(key_func=get_remote_address)
-
 app = FastAPI(title="OOO JSC SUEK Backend")
-app.state.limiter = limiter
-
-app.add_exception_handler(
-    RateLimitExceeded,
-    lambda request, exc: HTTPException(
-        status_code=429,
-        detail="Too many requests. Please wait before submitting again.",
-    ),
-)
-
-app.add_middleware(SlowAPIMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
@@ -53,13 +35,13 @@ def get_db():
         db.close()
 
 
-def send_admin_notification(contact: schemas.ContactCreate):
+def send_email_notification(contact: schemas.ContactCreate):
     api_key = os.getenv("RESEND_API_KEY")
     email_from = os.getenv("EMAIL_FROM")
     email_to = os.getenv("EMAIL_TO")
 
     if not api_key or not email_from or not email_to:
-        print("Resend admin email settings missing")
+        print("Resend email settings missing")
         return
 
     resend.api_key = api_key
@@ -68,7 +50,6 @@ def send_admin_notification(contact: schemas.ContactCreate):
         response = resend.Emails.send({
             "from": email_from,
             "to": email_to,
-            "reply_to": contact.email,
             "subject": f"New Inquiry: {contact.subject}",
             "html": f"""
                 <h2>New Website Inquiry</h2>
@@ -83,90 +64,10 @@ def send_admin_notification(contact: schemas.ContactCreate):
             """
         })
 
-        print("Admin notification sent:", response)
+        print("Resend response:", response)
 
     except Exception as error:
-        print("Admin notification error:", str(error))
-
-
-def send_client_acknowledgment(contact: schemas.ContactCreate):
-    api_key = os.getenv("RESEND_API_KEY")
-    email_from = os.getenv("EMAIL_FROM")
-
-    if not api_key or not email_from:
-        print("Resend client acknowledgment settings missing")
-        return
-
-    resend.api_key = api_key
-
-    try:
-        response = resend.Emails.send({
-            "from": email_from,
-            "to": contact.email,
-            "subject": "We received your inquiry - OOO JSC SUEK Energy Facilitation",
-            "html": f"""
-                <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #0f172a;">
-                    <h2>Thank you, {contact.name}</h2>
-
-                    <p>
-                        We have received your inquiry regarding:
-                        <strong>{contact.subject}</strong>.
-                    </p>
-
-                    <p>
-                        Our energy facilitation team will review your message and contact you
-                        as soon as possible.
-                    </p>
-
-                    <hr />
-
-                    <p><strong>Your submitted message:</strong></p>
-                    <p>{contact.message}</p>
-
-                    <hr />
-
-                    <p>
-                        Best regards,<br />
-                        <strong>OOO JSC SUEK Energy Facilitation</strong><br />
-                        Website: www.ooojscsuek.ru<br />
-                        Email: info@ooojscsuek.ru
-                    </p>
-                </div>
-            """
-        })
-
-        print("Client acknowledgment sent:", response)
-
-    except Exception as error:
-        print("Client acknowledgment error:", str(error))
-
-
-@app.post("/admin/login", response_model=schemas.AdminLoginResponse)
-@limiter.limit("5/minute")
-def admin_login(request: Request, payload: schemas.AdminLoginRequest):
-    admin_username = os.getenv("ADMIN_USERNAME")
-    admin_password = os.getenv("ADMIN_PASSWORD")
-    admin_token = os.getenv("ADMIN_TOKEN")
-
-    if not admin_username or not admin_password or not admin_token:
-        raise HTTPException(
-            status_code=500,
-            detail="Admin login settings are missing"
-        )
-
-    if (
-        payload.username != admin_username
-        or payload.password != admin_password
-    ):
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid admin credentials"
-        )
-
-    return {
-        "success": True,
-        "token": admin_token,
-    }
+        print("Resend error:", str(error))
 
 
 @app.get("/")
@@ -179,19 +80,13 @@ def health_check():
 
 
 @app.post("/contact", response_model=schemas.ContactRead)
-@limiter.limit("3/minute")
-def create_contact(
-    request: Request,
-    contact: schemas.ContactCreate,
-    db: Session = Depends(get_db)
-):
+def create_contact(contact: schemas.ContactCreate, db: Session = Depends(get_db)):
     db_contact = models.Contact(**contact.model_dump())
     db.add(db_contact)
     db.commit()
     db.refresh(db_contact)
 
-    send_admin_notification(contact)
-    send_client_acknowledgment(contact)
+    send_email_notification(contact)
 
     return db_contact
 
@@ -202,21 +97,11 @@ def get_contacts(db: Session = Depends(get_db)):
 
 
 @app.delete("/contacts/{contact_id}")
-@limiter.limit("20/minute")
-def delete_contact(
-    request: Request,
-    contact_id: int,
-    db: Session = Depends(get_db)
-):
-    contact = db.query(models.Contact).filter(
-        models.Contact.id == contact_id
-    ).first()
+def delete_contact(contact_id: int, db: Session = Depends(get_db)):
+    contact = db.query(models.Contact).filter(models.Contact.id == contact_id).first()
 
     if not contact:
-        raise HTTPException(
-            status_code=404,
-            detail="Inquiry not found"
-        )
+        raise HTTPException(status_code=404, detail="Inquiry not found")
 
     db.delete(contact)
     db.commit()
