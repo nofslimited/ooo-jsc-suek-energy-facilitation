@@ -35,19 +35,19 @@ def get_db():
         db.close()
 
 
-def send_email_notification(contact: schemas.ContactCreate):
+def send_admin_notification(contact: schemas.ContactCreate):
     api_key = os.getenv("RESEND_API_KEY")
     email_from = os.getenv("EMAIL_FROM")
     email_to = os.getenv("EMAIL_TO")
 
     if not api_key or not email_from or not email_to:
-        print("Resend email settings missing")
+        print("Admin email settings missing")
         return
 
     resend.api_key = api_key
 
     try:
-        response = resend.Emails.send({
+        resend.Emails.send({
             "from": email_from,
             "to": email_to,
             "subject": f"New Inquiry: {contact.subject}",
@@ -64,10 +64,69 @@ def send_email_notification(contact: schemas.ContactCreate):
             """
         })
 
-        print("Resend response:", response)
+    except Exception as error:
+        print("Admin email error:", str(error))
+
+
+def send_client_acknowledgment(contact: schemas.ContactCreate):
+    api_key = os.getenv("RESEND_API_KEY")
+    email_from = os.getenv("EMAIL_FROM")
+
+    if not api_key or not email_from:
+        print("Client acknowledgment settings missing")
+        return
+
+    resend.api_key = api_key
+
+    try:
+        resend.Emails.send({
+            "from": email_from,
+            "to": contact.email,
+            "subject": "We Received Your Inquiry | OOO JSC SUEK Energy Facilitation",
+            "html": f"""
+                <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                    <h2>Thank you for contacting OOO JSC SUEK Energy Facilitation</h2>
+
+                    <p>Dear {contact.name},</p>
+
+                    <p>
+                        We have successfully received your inquiry regarding:
+                        <strong>{contact.subject}</strong>.
+                    </p>
+
+                    <p>
+                        Our commercial team will carefully review your request
+                        and contact you shortly.
+                    </p>
+
+                    <p>
+                        If your request is urgent, you may also contact us directly:
+                    </p>
+
+                    <ul>
+                        <li><strong>Phone / WhatsApp:</strong> +7 926 503 82 48</li>
+                        <li><strong>Email:</strong> info@ooojscsuek.ru</li>
+                        <li><strong>Website:</strong> https://www.ooojscsuek.ru</li>
+                    </ul>
+
+                    <hr />
+
+                    <p><strong>Your submitted message:</strong></p>
+                    <p>{contact.message}</p>
+
+                    <hr />
+
+                    <p>
+                        Best regards,<br />
+                        <strong>OOO JSC SUEK Energy Facilitation</strong><br />
+                        Moscow, Russia
+                    </p>
+                </div>
+            """
+        })
 
     except Exception as error:
-        print("Resend error:", str(error))
+        print("Client acknowledgment error:", str(error))
 
 
 @app.get("/")
@@ -86,7 +145,8 @@ def create_contact(contact: schemas.ContactCreate, db: Session = Depends(get_db)
     db.commit()
     db.refresh(db_contact)
 
-    send_email_notification(contact)
+    send_admin_notification(contact)
+    send_client_acknowledgment(contact)
 
     return db_contact
 
