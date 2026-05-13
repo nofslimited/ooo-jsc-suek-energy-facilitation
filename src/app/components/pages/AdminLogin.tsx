@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Lock, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -8,10 +8,19 @@ const API_BASE =
 
 export function AdminLogin() {
   const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("suek_admin_token");
+
+    if (token) {
+      navigate("/admin-dashboard");
+    }
+  }, [navigate]);
 
   const handleLogin = async (event: FormEvent) => {
     event.preventDefault();
@@ -31,12 +40,11 @@ export function AdminLogin() {
       });
 
       if (!response.ok) {
-        throw new Error("Invalid admin username or password.");
+        throw new Error("Invalid credentials");
       }
 
       const data = await response.json();
 
-      localStorage.setItem("suek_admin_logged_in", "true");
       localStorage.setItem("suek_admin_token", data.token);
 
       navigate("/admin-dashboard");
@@ -61,13 +69,14 @@ export function AdminLogin() {
           </h1>
 
           <p className="mt-3 text-sm text-slate-400">
-            Secure access to OOO JSC SUEK inquiry dashboard.
+            Secure access to OOO JSC SUEK inquiry dashboard
           </p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-5">
           <input
             type="text"
+            required
             value={username}
             onChange={(event) => setUsername(event.target.value)}
             placeholder="Username"
@@ -76,6 +85,7 @@ export function AdminLogin() {
 
           <input
             type="password"
+            required
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             placeholder="Password"
