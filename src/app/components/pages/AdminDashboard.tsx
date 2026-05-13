@@ -27,43 +27,36 @@ const API_BASE =
 
 export function AdminDashboard() {
   const navigate = useNavigate();
-
   const [inquiries, setInquiries] = useState<ContactInquiry[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  const adminToken = localStorage.getItem("suek_admin_token");
-
   const loadInquiries = () => {
     fetch(`${API_BASE}/contacts`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to load");
-        }
-
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((data) => {
         setInquiries(data);
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
+        console.error("Failed to load inquiries:", err);
         setLoading(false);
       });
   };
 
   useEffect(() => {
-    if (!adminToken) {
+    const loggedIn = localStorage.getItem("suek_admin_logged_in");
+
+    if (loggedIn !== "true") {
       navigate("/admin-login");
       return;
     }
 
     loadInquiries();
-  }, [navigate, adminToken]);
+  }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("suek_admin_token");
+    localStorage.removeItem("suek_admin_logged_in");
     navigate("/admin-login");
   };
 
@@ -82,13 +75,13 @@ export function AdminDashboard() {
       });
 
       if (!response.ok) {
-        throw new Error("Delete failed");
+        throw new Error("Failed to delete inquiry");
       }
 
       setInquiries((prev) => prev.filter((item) => item.id !== id));
     } catch (error) {
       console.error(error);
-      alert("Failed to delete inquiry.");
+      alert("Failed to delete inquiry. Please try again.");
     } finally {
       setDeletingId(null);
     }
@@ -109,7 +102,7 @@ export function AdminDashboard() {
               </h1>
 
               <p className="mt-2 text-sm text-slate-400">
-                Website contact inquiries and communication requests
+                Website contact inquiries and communication requests.
               </p>
             </div>
           </div>
