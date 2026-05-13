@@ -57,6 +57,7 @@ export function AdminDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem("suek_admin_logged_in");
+    localStorage.removeItem("suek_admin_token");
     navigate("/admin-login");
   };
 

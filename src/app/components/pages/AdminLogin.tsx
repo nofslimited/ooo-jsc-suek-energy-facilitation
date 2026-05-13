@@ -2,25 +2,50 @@ import { FormEvent, useState } from "react";
 import { Lock, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "SUEK2026!";
+const API_BASE =
+  import.meta.env.VITE_API_BASE_URL ||
+  "https://name-ooo-jsc-suek-backend.onrender.com";
 
 export function AdminLogin() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (event: FormEvent) => {
+  const handleLogin = async (event: FormEvent) => {
     event.preventDefault();
+    setError("");
+    setLoading(true);
 
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    try {
+      const response = await fetch(`${API_BASE}/admin/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Invalid admin username or password.");
+      }
+
+      const data = await response.json();
+
       localStorage.setItem("suek_admin_logged_in", "true");
-      navigate("/admin-dashboard");
-      return;
-    }
+      localStorage.setItem("suek_admin_token", data.token);
 
-    setError("Invalid admin username or password.");
+      navigate("/admin-dashboard");
+    } catch (error) {
+      console.error(error);
+      setError("Invalid admin username or password.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,10 +90,11 @@ export function AdminLogin() {
 
           <button
             type="submit"
-            className="flex w-full items-center justify-center gap-3 rounded-xl bg-amber-500 px-6 py-4 text-sm font-black uppercase tracking-[0.16em] text-slate-950 transition hover:bg-amber-400"
+            disabled={loading}
+            className="flex w-full items-center justify-center gap-3 rounded-xl bg-amber-500 px-6 py-4 text-sm font-black uppercase tracking-[0.16em] text-slate-950 transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Lock className="h-5 w-5" />
-            Login
+            {loading ? "Checking..." : "Login"}
           </button>
         </form>
       </div>

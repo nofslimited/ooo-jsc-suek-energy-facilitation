@@ -123,6 +123,33 @@ def send_client_acknowledgment(contact: schemas.ContactCreate):
         print("Client acknowledgment error:", str(error))
 
 
+@app.post("/admin/login", response_model=schemas.AdminLoginResponse)
+def admin_login(payload: schemas.AdminLoginRequest):
+    admin_username = os.getenv("ADMIN_USERNAME")
+    admin_password = os.getenv("ADMIN_PASSWORD")
+    admin_token = os.getenv("ADMIN_TOKEN")
+
+    if not admin_username or not admin_password or not admin_token:
+        raise HTTPException(
+            status_code=500,
+            detail="Admin login settings are missing"
+        )
+
+    if (
+        payload.username != admin_username
+        or payload.password != admin_password
+    ):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid admin credentials"
+        )
+
+    return {
+        "success": True,
+        "token": admin_token,
+    }
+
+
 @app.get("/")
 def health_check():
     return {
@@ -152,10 +179,15 @@ def get_contacts(db: Session = Depends(get_db)):
 
 @app.delete("/contacts/{contact_id}")
 def delete_contact(contact_id: int, db: Session = Depends(get_db)):
-    contact = db.query(models.Contact).filter(models.Contact.id == contact_id).first()
+    contact = db.query(models.Contact).filter(
+        models.Contact.id == contact_id
+    ).first()
 
     if not contact:
-        raise HTTPException(status_code=404, detail="Inquiry not found")
+        raise HTTPException(
+            status_code=404,
+            detail="Inquiry not found"
+        )
 
     db.delete(contact)
     db.commit()
