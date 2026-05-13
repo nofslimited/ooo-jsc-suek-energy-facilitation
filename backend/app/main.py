@@ -1,16 +1,34 @@
 import os
 import resend
 
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
+
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 from .database import SessionLocal, engine, Base
 from . import models, schemas
 
 Base.metadata.create_all(bind=engine)
 
+limiter = Limiter(key_func=get_remote_address)
+
 app = FastAPI(title="OOO JSC SUEK Backend")
+app.state.limiter = limiter
+
+app.add_exception_handler(
+    RateLimitExceeded,
+    lambda request, exc: HTTPException(
+        status_code=429,
+        detail="Too many requests. Please wait before submitting again.",
+    ),
+)
+
+app.add_middleware(SlowAPIMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
@@ -124,7 +142,8 @@ def send_client_acknowledgment(contact: schemas.ContactCreate):
 
 
 @app.post("/admin/login", response_model=schemas.AdminLoginResponse)
-def admin_login(payload: schemas.AdminLoginRequest):
+@limiter.limit("5/minute")
+def admin_login(request: Request, payload: schemas.AdminLoginRequest):
     admin_username = os.getenv("ADMIN_USERNAME")
     admin_password = os.getenv("ADMIN_PASSWORD")
     admin_token = os.getenv("ADMIN_TOKEN")
@@ -160,7 +179,12 @@ def health_check():
 
 
 @app.post("/contact", response_model=schemas.ContactRead)
-def create_contact(contact: schemas.ContactCreate, db: Session = Depends(get_db)):
+@limiter.limit("3/minute")
+def create_contact(
+    request: Request,
+    contact: schemas.ContactCreate,
+    db: Session = Depends(get_db)
+):
     db_contact = models.Contact(**contact.model_dump())
     db.add(db_contact)
     db.commit()
@@ -178,7 +202,12 @@ def get_contacts(db: Session = Depends(get_db)):
 
 
 @app.delete("/contacts/{contact_id}")
-def delete_contact(contact_id: int, db: Session = Depends(get_db)):
+@limiter.limit("20/minute")
+def delete_contact(
+    request: Request,
+    contact_id: int,
+    db: Session = Depends(get_db)
+):
     contact = db.query(models.Contact).filter(
         models.Contact.id == contact_id
     ).first()
