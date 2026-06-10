@@ -1,7 +1,8 @@
 import os
+import secrets
 import resend
 
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -26,6 +27,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "suek-admin-token-2026")
+
 
 def get_db():
     db = SessionLocal()
@@ -33,6 +36,18 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def verify_admin_token(authorization: str | None = Header(default=None)):
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Missing admin token")
+
+    expected = f"Bearer {ADMIN_TOKEN}"
+
+    if not secrets.compare_digest(authorization, expected):
+        raise HTTPException(status_code=401, detail="Invalid admin token")
+
+    return True
 
 
 def send_admin_notification(contact: schemas.ContactCreate):
@@ -138,6 +153,26 @@ def health_check():
     }
 
 
+@app.post("/admin/login", response_model=schemas.AdminLoginResponse)
+def admin_login(login_data: schemas.AdminLoginRequest):
+    admin_username = os.getenv("ADMIN_USERNAME")
+    admin_password = os.getenv("ADMIN_PASSWORD")
+
+    if not admin_username or not admin_password:
+        raise HTTPException(status_code=500, detail="Admin credentials not configured")
+
+    username_valid = secrets.compare_digest(login_data.username, admin_username)
+    password_valid = secrets.compare_digest(login_data.password, admin_password)
+
+    if not username_valid or not password_valid:
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+
+    return {
+        "success": True,
+        "token": ADMIN_TOKEN,
+    }
+
+
 @app.post("/contact", response_model=schemas.ContactRead)
 def create_contact(contact: schemas.ContactCreate, db: Session = Depends(get_db)):
     db_contact = models.Contact(**contact.model_dump())
@@ -152,12 +187,19 @@ def create_contact(contact: schemas.ContactCreate, db: Session = Depends(get_db)
 
 
 @app.get("/contacts", response_model=list[schemas.ContactRead])
-def get_contacts(db: Session = Depends(get_db)):
+def get_contacts(
+    db: Session = Depends(get_db),
+    _: bool = Depends(verify_admin_token),
+):
     return db.query(models.Contact).order_by(models.Contact.id.desc()).all()
 
 
 @app.delete("/contacts/{contact_id}")
-def delete_contact(contact_id: int, db: Session = Depends(get_db)):
+def delete_contact(
+    contact_id: int,
+    db: Session = Depends(get_db),
+    _: bool = Depends(verify_admin_token),
+):
     contact = db.query(models.Contact).filter(models.Contact.id == contact_id).first()
 
     if not contact:
