@@ -31,36 +31,67 @@ export function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  const loadInquiries = () => {
-    fetch(`${API_BASE}/contacts`)
-      .then((res) => res.json())
-      .then((data) => {
-        setInquiries(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to load inquiries:", err);
-        setLoading(false);
-      });
+  const getAdminToken = () => {
+    return localStorage.getItem("suek_admin_token");
   };
 
-  useEffect(() => {
-    const loggedIn = localStorage.getItem("suek_admin_logged_in");
+  const loadInquiries = async () => {
+    const token = getAdminToken();
 
-    if (loggedIn !== "true") {
+    if (!token) {
       navigate("/admin-login");
       return;
     }
 
+    try {
+      const response = await fetch(`${API_BASE}/contacts`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 401) {
+        localStorage.removeItem("suek_admin_token");
+        navigate("/admin-login");
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Failed to load inquiries");
+      }
+
+      const data = await response.json();
+      setInquiries(data);
+    } catch (err) {
+      console.error("Failed to load inquiries:", err);
+      alert("Failed to load inquiries. Please login again.");
+      localStorage.removeItem("suek_admin_token");
+      navigate("/admin-login");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     loadInquiries();
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogout = () => {
+    localStorage.removeItem("suek_admin_token");
     localStorage.removeItem("suek_admin_logged_in");
     navigate("/admin-login");
   };
 
   const handleDelete = async (id: number) => {
+    const token = getAdminToken();
+
+    if (!token) {
+      navigate("/admin-login");
+      return;
+    }
+
     const confirmed = window.confirm(
       `Are you sure you want to delete Inquiry #${id}?`
     );
@@ -72,7 +103,16 @@ export function AdminDashboard() {
     try {
       const response = await fetch(`${API_BASE}/contacts/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+
+      if (response.status === 401) {
+        localStorage.removeItem("suek_admin_token");
+        navigate("/admin-login");
+        return;
+      }
 
       if (!response.ok) {
         throw new Error("Failed to delete inquiry");
